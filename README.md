@@ -1,6 +1,13 @@
 # Python based Telegram VOIP calls
 
-## Build and Install libtgvoip
+## The easy way: Build with Docker
+```
+docker build -t pytgvoip .
+```
+
+## Or, build manually
+
+### Build and Install libtgvoip
 ```
 git clone https://github.com/grishka/libtgvoip.git
 cd libtgvoip
@@ -9,7 +16,7 @@ make
 make install
 ```
 
-## Build tdlib
+### Build tdlib
 ```
 git clone https://github.com/tdlib/td.git
 cd td
@@ -19,7 +26,7 @@ cmake -DCMAKE_BUILD_TYPE=Release ..
 cmake --build .
 ```
 
-## Build and Install tdlib Python wrapper
+### Build and Install tdlib Python wrapper
 ```
 git clone https://github.com/gabomdq/python-telegram.git
 cd python-telegram
@@ -29,7 +36,7 @@ cd python-telegram
 python3 setup.py install
 ```
 
-## Build
+### Build
 ```
 python3 setup.py build_ext --inplace
 ```
