@@ -33,10 +33,7 @@ RUN echo "manylinux1_compatible = True" > /usr/lib/python3.6/_manylinux.py \
 WORKDIR /usr/src
 
 # Build libtgvoip
-RUN set -ex; git clone https://github.com/grishka/libtgvoip.git
-WORKDIR /usr/src/libtgvoip
-COPY libtgvoip_musl.patch .
-RUN set -ex; patch -p1 < libtgvoip_musl.patch
+RUN set -ex; git clone https://github.com/gabomdq/libtgvoip.git
 RUN set -ex; ./configure && make -j4 && make install
 
 # Build tdlib

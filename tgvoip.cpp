@@ -29,11 +29,13 @@
 
 
 /* Available functions */
-static PyObject *tgvoip_call(PyObject *self, PyObject *args);
+static PyObject *tgvoip_call_start(PyObject *self, PyObject *args);
+static PyObject *tgvoip_call_stop(PyObject *self, PyObject *args);
 
 /* Module specification */
 static PyMethodDef module_methods[] = {
-    {"call", (PyCFunction) tgvoip_call, METH_VARARGS, "Establish a call"},
+    {"call_start", (PyCFunction) tgvoip_call_start, METH_VARARGS, "Establish a call"},
+    {"call_stop", (PyCFunction) tgvoip_call_stop, METH_NOARGS, "Terminate a call"},
     {NULL, NULL, 0, NULL}
 };
 
@@ -67,6 +69,9 @@ static VoIPController::Config config {
     /*enableCallUpgrade*/false,
 };
 
+static VoIPController *cnt = NULL;
+static bool call_active = false;
+
 static bool check_type(PyObject *o, const char *type)
 {
     PyObject *t = PyDict_GetItemString(o, "@type");
@@ -80,7 +85,7 @@ static bool check_type(PyObject *o, const char *type)
     return ret;
 }
 
-static PyObject *tgvoip_call(PyObject *self, PyObject *args)
+static PyObject *tgvoip_call_start(PyObject *self, PyObject *args)
 {
     PyObject *call = NULL;
     if (!PyArg_UnpackTuple(args, "tgvoip_call", 1, 1, &call)) {
@@ -232,18 +237,29 @@ static PyObject *tgvoip_call(PyObject *self, PyObject *args)
     }
 
     ServerConfig::GetSharedInstance()->Update(server_conf);
-    VoIPController *cnt = new VoIPController();
-    cnt->SetConfig(config);
-    PySys_WriteStdout("ENCRYPTION KEY >>> ");
-    for (int x=0; x < 256;x++) {
-        PySys_WriteStdout("%.02X ", (uint8_t) PyBytes_AsString(encription_key)[x]);
+    if (cnt == NULL) {
+        cnt = new VoIPController();
     }
-    PySys_WriteStdout("\n");
+    cnt->SetConfig(config);
     cnt->SetEncryptionKey(PyBytes_AsString(encription_key), PyObject_IsTrue(is_outgoing));
     cnt->SetRemoteEndpoints(endpoints, allow_p2p, max_layer);
     cnt->Start();
     cnt->Connect();
-
+    call_active = true;
     Py_INCREF(Py_True);
     return Py_True;
+}
+
+
+static PyObject *tgvoip_call_stop(PyObject *self, PyObject *args)
+{
+    if (!call_active) {
+        Py_INCREF(Py_False);
+        return Py_False;
+    }
+    cnt->Stop();
+    call_active = false;
+    Py_INCREF(Py_True);
+    return Py_True;
+
 }

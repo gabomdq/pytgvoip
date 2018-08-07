@@ -9,7 +9,7 @@ docker build -t pytgvoip .
 
 ### Build and Install libtgvoip
 ```
-git clone https://github.com/grishka/libtgvoip.git
+git clone https://github.com/gabomdq/libtgvoip.git
 cd libtgvoip
 ./configure
 make
@@ -33,12 +33,12 @@ cd python-telegram
 ```
 (Before installing!) Copy libtdjson.so from the previous step to python-telegram/telegram/lib/linux
 ```
-python3 setup.py install
+python3 setup.py install --user
 ```
 
-### Build
+### Install this extension
 ```
-python3 setup.py build_ext --inplace
+python3 setup.py install --user
 ```
 
 You need to register an app on Telegram's website, retrieve the API id and hash.
