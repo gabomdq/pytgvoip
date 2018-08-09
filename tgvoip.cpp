@@ -258,6 +258,9 @@ static PyObject *tgvoip_call_stop(PyObject *self, PyObject *args)
         return Py_False;
     }
     cnt->Stop();
+    // Deleting is not strictly required but it works around a bug when using the same UDP port multiple times
+    delete cnt;
+    cnt = NULL;
     call_active = false;
     Py_INCREF(Py_True);
     return Py_True;
