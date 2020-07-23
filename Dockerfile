@@ -34,6 +34,7 @@ WORKDIR /usr/src
 
 # Build libtgvoip
 RUN set -ex; git clone https://github.com/gabomdq/libtgvoip.git
+WORKDIR /usr/src/libtgvoip
 RUN set -ex; ./configure && make -j4 && make install
 
 # Build tdlib
