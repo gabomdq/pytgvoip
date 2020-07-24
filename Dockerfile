@@ -3,7 +3,9 @@
 FROM debian:buster
 
 # Install compiling tools
-RUN apt update && apt --no-install-recommends -y install make git zlib1g-dev libssl-dev gperf php cmake clang libc++-dev libc++abi-dev 
+RUN apt update \
+&& apt --no-install-recommends -y install make git zlib1g-dev libssl-dev gperf php cmake clang libc++-dev libc++abi-dev \
+&& rm -rf /var/lib/apt/lists/*
 
 # Install libtgvoip pyhton3 and pip
 RUN apt --no-install-recommends -y install libtgvoip-dev python3 python3-pip
