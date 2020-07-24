@@ -2,8 +2,7 @@ FROM debian:buster
 
 # Install compiling tools
 RUN apt update \
-&& apt --no-install-recommends -y install make git zlib1g-dev libssl-dev gperf php cmake clang libc++-dev libc++abi-dev \
-&& rm -rf /var/lib/apt/lists/*
+&& apt --no-install-recommends -y install make git zlib1g-dev libssl-dev gperf php cmake clang libc++-dev libc++abi-dev
 
 # Install libtgvoip pyhton3 and pip
 RUN apt --no-install-recommends -y install libtgvoip-dev python3 python3-pip
@@ -26,9 +25,6 @@ RUN git checkout v1.6.0 \
 # Purge unuseful packages
 RUN apt -y purge make git zlib1g-dev libssl-dev gperf php cmake clang libc++-dev libc++abi-dev && apt -y autoremove
 
-# Purge tdlib source code
-RUN rm -rf /usr/src/td
-
 # python-telegram
 RUN pip3 install --user python-telegram
 
@@ -45,3 +41,7 @@ ARG BUILD_DATE
 LABEL org.label-schema.vcs-ref=${VCS_REF} \
       org.label-schema.vcs-url=${VCS_URL} \
       org.label-schema.build-date=${BUILD_DATE}
+
+# Purge tdlib source code
+RUN rm -rf /usr/src/td
+RUN rm -rf /var/lib/apt/lists/*
