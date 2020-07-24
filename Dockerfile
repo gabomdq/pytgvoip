@@ -1,17 +1,12 @@
+#FROM debian:buster AS compile-image
+
 FROM debian:buster
 
-RUN apt update
+# Install compiling tools
+RUN apt update && apt -y install make git zlib1g-dev libssl-dev gperf php cmake clang libc++-dev libc++abi-dev 
 
-RUN apt -y install make git zlib1g-dev libssl-dev gperf php cmake clang libc++-dev libc++abi-dev python3
-
-# Install libtgvoip
-RUN apt -y install libtgvoip-dev
-
-#WORKDIR /usr/src
-
-#RUN set -ex; git clone https://salsa.debian.org/debian/libtgvoip.git
-#WORKDIR /usr/src/libtgvoip
-#RUN ./install-sh
+# Install libtgvoip pyhton3 and pip
+RUN apt -y install libtgvoip-dev python3 python3-pip
 
 # Build tdlib
 WORKDIR /usr/src
@@ -26,15 +21,25 @@ RUN git checkout v1.6.0 \
 && cmake --build . --target install \
 && cd .. \
 && cd .. \
-&& ls -l td/tdlib \
+&& ls -l td/tdlib
 
 # python-telegram
-RUN python3 -m pip install python-telegram
+RUN apt -y install python3-pip
+RUN pip3 install --user python-telegram
+
+
+#FROM debian:buster AS runtime-image
+
+#COPY --from=compile-image source destination
 
 # pytgvoip
+CMD python3
 
-CMD python
+# Purge unuseful packages
+RUN apt -y purge make git zlib1g-dev libssl-dev gperf php cmake clang libc++-dev libc++abi-dev && apt -y autoremove
 
+# Purge tdlib source code
+RUN rm -rf /usr/src/td
 
 ARG VCS_REF
 ARG VCS_URL
