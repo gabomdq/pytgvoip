@@ -4,7 +4,7 @@
 
 ## Build with Docker
 ```
-docker build -rm -t nlhommepytgvoip .
+docker build -rm -t nlhomme/pytgvoip .
 ```
 
 You need to register an app on Telegram's website, retrieve the API id and hash.
