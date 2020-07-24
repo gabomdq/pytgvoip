@@ -1,5 +1,3 @@
-#FROM debian:buster AS compile-image
-
 FROM debian:buster
 
 # Install compiling tools
@@ -25,22 +23,21 @@ RUN git checkout v1.6.0 \
 && cd .. \
 && ls -l td/tdlib
 
-# python-telegram
-RUN pip3 install --user python-telegram
-
-
-#FROM debian:buster AS runtime-image
-
-#COPY --from=compile-image source destination
-
-# pytgvoip
-CMD python3
-
 # Purge unuseful packages
 RUN apt -y purge make git zlib1g-dev libssl-dev gperf php cmake clang libc++-dev libc++abi-dev && apt -y autoremove
 
 # Purge tdlib source code
 RUN rm -rf /usr/src/td
+
+# python-telegram
+RUN pip3 install --user python-telegram
+
+COPY setup.py root/
+COPY tgcall.py root/
+COPY tgvoip.cpp root/
+
+# pytgvoip
+CMD python3 setup.py install --user
 
 ARG VCS_REF
 ARG VCS_URL
