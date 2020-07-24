@@ -1,5 +1,7 @@
 # Python based Telegram VOIP calls
 
+# Warning: this is not yet ready to use
+
 ## Build with Docker
 ```
 docker build -rm -t nlhommepytgvoip .
