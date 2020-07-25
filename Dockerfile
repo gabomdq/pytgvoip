@@ -22,19 +22,20 @@ RUN git checkout v1.6.0 \
 && cd .. \
 && ls -l td/tdlib
 
-# Purge unuseful packages
-RUN apt -y purge make git zlib1g-dev libssl-dev gperf php cmake clang libc++-dev libc++abi-dev && apt -y autoremove
-
-# python-telegram
-RUN pip3 install --user python-telegram
-
+# Python scripts:
 COPY setup.py root/
 COPY tgcall.py root/
 COPY tgvoip.cpp root/
 
-# pytgvoip
+# python-telegram
 CMD pip3 install -r requirements.txt
+RUN pip3 install --user python-telegram
+
+# pytgvoip
 CMD python3 setup.py install --user
+
+# Purge unuseful packages
+RUN apt -y purge make git zlib1g-dev libssl-dev gperf php cmake clang libc++-dev libc++abi-dev && apt -y autoremove
 
 ARG VCS_REF
 ARG VCS_URL
