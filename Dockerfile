@@ -1,11 +1,22 @@
 FROM debian:buster
 
-# Install compiling tools
+# Install compiling tools, pyhton3 and pip
 RUN apt update \
-&& apt --no-install-recommends -y install make git zlib1g-dev libssl-dev gperf php cmake clang libc++-dev libc++abi-dev
-
-# Install libtgvoip pyhton3 and pip
-RUN apt --no-install-recommends -y install libtgvoip-dev python3 python3-pip
+&& apt --no-install-recommends -y install make \
+      git \
+      zlib1g-dev \
+      libssl-dev \
+      gperf \
+      php \
+      cmake \
+      clang \
+      libc++-dev \
+      libc++abi-dev \
+      libopus-dev \
+      libpulse-dev \
+      libasound-dev \
+      python3 \
+      python3-pip
 
 # Build tdlib
 WORKDIR /usr/src
@@ -22,7 +33,15 @@ RUN git checkout v1.6.0 \
 && cd .. \
 && ls -l td/tdlib
 
-# Python scripts:
+# Build libtgvoip
+WORKDIR /usr/src
+RUN set -ex; git clone https://github.com/gabomdq/libtgvoip.git
+
+WORKDIR /usr/src/libtgvoip
+RUN apt --no-install-recommends -y install 
+RUN set -ex; ./configure && make -j4 && make install
+
+# Copy python scripts and tgvoip.cpp
 COPY *.py /root/
 COPY requirements.txt /root/
 COPY tgvoip.cpp /root/
@@ -45,8 +64,11 @@ LABEL org.label-schema.vcs-ref=${VCS_REF} \
 # Purge unuseful packages
 RUN apt -y purge make git zlib1g-dev libssl-dev gperf php cmake clang libc++-dev libc++abi-dev && apt -y autoremove
 
-# Purge tdlib source code
+# Purge tdlib and source code
 RUN rm -rf /usr/src/td
+RUN rm -rf /usr/src/libtgvoip
+
+# Purge dowloaded packages
 RUN rm -rf /var/lib/apt/lists/*
 
 RUN ls -lh
