@@ -22,9 +22,6 @@ RUN git checkout v1.6.0 \
 && cd .. \
 && ls -l td/tdlib
 
-# Purge unuseful packages
-RUN apt -y purge make git zlib1g-dev libssl-dev gperf php cmake clang libc++-dev libc++abi-dev && apt -y autoremove
-
 # Python scripts:
 COPY *.py /root/
 COPY requirements.txt /root/
@@ -44,6 +41,9 @@ ARG BUILD_DATE
 LABEL org.label-schema.vcs-ref=${VCS_REF} \
       org.label-schema.vcs-url=${VCS_URL} \
       org.label-schema.build-date=${BUILD_DATE}
+
+# Purge unuseful packages
+RUN apt -y purge make git zlib1g-dev libssl-dev gperf php cmake clang libc++-dev libc++abi-dev && apt -y autoremove
 
 # Purge tdlib source code
 RUN rm -rf /usr/src/td
