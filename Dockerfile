@@ -29,6 +29,7 @@ COPY tgvoip.cpp root/
 
 # python-telegram
 CMD pip3 install -r requirements.txt
+RUN pip3 install setuptools
 RUN pip3 install --user python-telegram
 
 # pytgvoip
