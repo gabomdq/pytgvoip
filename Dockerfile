@@ -22,21 +22,21 @@ RUN git checkout v1.6.0 \
 && cd .. \
 && ls -l td/tdlib
 
-# Python scripts:
-COPY setup.py root/
-COPY tgcall.py root/
-COPY tgvoip.cpp root/
-
-# python-telegram
-CMD pip3 install -r requirements.txt
-RUN pip3 install setuptools
-RUN pip3 install --user python-telegram
-
-# pytgvoip
-CMD python3 setup.py install --user
-
 # Purge unuseful packages
 RUN apt -y purge make git zlib1g-dev libssl-dev gperf php cmake clang libc++-dev libc++abi-dev && apt -y autoremove
+
+# Python scripts:
+COPY *.py /root/
+COPY requirements.txt /root/
+COPY tgvoip.cpp /root/
+
+# python-telegram
+WORKDIR /root
+RUN pip3 install setuptools wheel
+RUN pip3 install -r requirements.txt
+
+# pytgvoip
+RUN python3 setup.py install
 
 ARG VCS_REF
 ARG VCS_URL
@@ -48,3 +48,6 @@ LABEL org.label-schema.vcs-ref=${VCS_REF} \
 # Purge tdlib source code
 RUN rm -rf /usr/src/td
 RUN rm -rf /var/lib/apt/lists/*
+
+RUN ls -lh
+CMD python3 /root/tgcall.py
