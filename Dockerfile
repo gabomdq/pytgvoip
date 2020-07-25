@@ -29,10 +29,21 @@ RUN git checkout v1.6.0 \
 && cd build \
 && export CXXFLAGS="-stdlib=libc++" \
 && CC=/usr/bin/clang CXX=/usr/bin/clang++ cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=../tdlib .. \
+&& cmake --build . --target prepare_cross_compiling \
+&& cd .. \
+&& php SplitSource.php \
+&& cd build \
 && cmake --build . --target install \
 && cd .. \
+&& php SplitSource.php --undo \
 && cd .. \
 && ls -l td/tdlib
+#&& export CXXFLAGS="-stdlib=libc++" \
+#&& CC=/usr/bin/clang CXX=/usr/bin/clang++ cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=../tdlib .. \
+#&& cmake --build . --target install \
+#&& cd .. \
+#&& cd .. \
+#&& ls -l td/tdlib
 
 # Build libtgvoip
 WORKDIR /usr/src
@@ -53,7 +64,7 @@ RUN pip3 install setuptools wheel
 RUN pip3 install -r requirements.txt
 
 # pytgvoip
-RUN python3 setup.py install
+CMD python3 /root/setup.py install
 
 ARG VCS_REF
 ARG VCS_URL
@@ -74,3 +85,4 @@ RUN rm -rf /var/lib/apt/lists/*
 
 RUN ls -lh
 CMD python3 /root/tgcall.py
+#RUN while true; do sleep 1000; done
