@@ -16,7 +16,8 @@ RUN apt update \
       libpulse-dev \
       libasound-dev \
       python3 \
-      python3-pip
+      python3-pip \
+      python3-dev
 
 # Build tdlib
 WORKDIR /usr/src
