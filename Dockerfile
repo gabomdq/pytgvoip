@@ -33,6 +33,7 @@ COPY tgcall.py root/
 COPY tgvoip.cpp root/
 
 # pytgvoip
+CMD pip3 install -r requirements.txt
 CMD python3 setup.py install --user
 
 ARG VCS_REF
