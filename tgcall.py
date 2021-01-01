@@ -8,7 +8,7 @@ import os
 import json
 import base64
 from telegram.client import Telegram
-from tgvoip import call
+from tgvoip import call_start
 
 
 def setup_voip(data):
@@ -19,7 +19,7 @@ def setup_voip(data):
     # peer_tag is base64 encoded
     for conn in data['state']['connections']:
         conn['peer_tag'] = base64.decodebytes(conn['peer_tag'].encode('utf-8'))
-    call(data)
+    call_start(data)
 
 def handler(msg):
     #print ("UPDATE >>>", msg)
